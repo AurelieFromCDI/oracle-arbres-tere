@@ -410,9 +410,9 @@
   /* Tirage */
   function newDraw(){
     DRAWN = [
-      pick(ESSENCES),
-      pick(SIGNES),
-      pick(INTERDITS)
+      ESSENCES[pick(ESSENCES)],
+      SIGNES[pick(SIGNES)],
+      INTERDITS[pick(INTERDITS)]
     ];
   }
   function fillCard(el, idx){
