@@ -498,7 +498,7 @@
   });
 
   function fillOracleCard(){
-    $("ocNum").textContent = String(100 + pick(900));
+    $("ocNum").textContent = String(100 + Math.floor(Math.random()*900));
     $("ocArbre").textContent = DRAWN[0][0];
     $("ocSigne").textContent = "Il y a là-bas " + lower(DRAWN[1][0]) + ".";
     $("ocInterdit").textContent = DRAWN[2][0];
