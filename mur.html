@@ -73,7 +73,10 @@
   var wall = document.getElementById("wall");
   var empty = document.getElementById("empty");
   var list = (typeof LEGENDS !== "undefined") ? LEGENDS.slice() : [];
-  list.sort(function(a,b){ return (b.date||"").localeCompare(a.date||""); });
+  list.sort(function(a,b){
+    if(!!a.fondatrice !== !!b.fondatrice) return a.fondatrice ? 1 : -1;
+    return (b.date||"").localeCompare(a.date||"");
+  });
   if(!list.length){ empty.hidden = false; return; }
   list.forEach(function(l){
     var card = document.createElement("article");

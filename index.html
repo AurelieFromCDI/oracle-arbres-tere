@@ -269,7 +269,8 @@
       elle rejoindra la collection des légendes de Thère.
     </p>
     <div class="btn-row">
-      <button id="sendBtn">✉ Envoyer la légende</button>
+      <button id="sendBtn">✉ Envoyer (appli mail)</button>
+      <button id="sendOwaBtn">🪟 Envoyer via Outlook (lycée)</button>
       <button id="copyBtn">📋 Copier le texte</button>
       <button id="dlBtn">⬇ Télécharger (.txt)</button>
     </div>
@@ -278,6 +279,8 @@
       <button class="ghost" id="againBtn">Une autre légende</button>
     </div>
     <p class="hint center" style="margin-top:10px">
+      Si rien ne s'ouvre : copiez le texte et collez-le dans votre messagerie du lycée,
+      à <b>aurelie.challes@saint-lo-there.fr</b>.<br>
       La carte d'oracle, imprimable sur papier (ou en PDF via « Enregistrer au format PDF »),
       est la suite finale du jeu : elle porte votre arbre, votre signe, votre interdit et votre légende.
     </p>
@@ -557,6 +560,14 @@
     window.location.href = "mailto:" + DEST_EMAIL +
       "?subject=" + encodeURIComponent(sujet) +
       "&body=" + encodeURIComponent(corps);
+  });
+  $("sendOwaBtn").addEventListener("click", function(){
+    var sujet = "Légende des arbres de Thère – " + $("outTitle").textContent;
+    var url = "https://outlook.office.com/mail/deeplink/compose" +
+      "?to=" + encodeURIComponent(DEST_EMAIL) +
+      "&subject=" + encodeURIComponent(sujet) +
+      "&body=" + encodeURIComponent(plainText());
+    window.open(url, "_blank");
   });
   $("againBtn").addEventListener("click", function(){
     $("inTitle").value = ""; $("inTree").value = ""; $("inText").value = ""; $("inSig").value = "";
