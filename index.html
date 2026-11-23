@@ -1,0 +1,651 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>L'Oracle des arbres de Thère</title>
+<meta name="description" content="Tire trois cartes, invente la légende. Un jeu d'écriture solitaire autour des arbres de Thère.">
+<style>
+  :root{
+    --bg:#0c120e;
+    --bg2:#121b15;
+    --text:#e9e4d5;
+    --muted:#9aa694;
+    --amber:#e8c46a;
+    --amber-dim:#b5965a;
+    --green:#7fae8a;
+    --card:#17231b;
+    --line:#2a3a2e;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    min-height:100vh;
+    background:radial-gradient(1200px 800px at 50% -10%, #18251c 0%, var(--bg) 60%);
+    color:var(--text);
+    font-family:Georgia,"Times New Roman",serif;
+    line-height:1.55;
+  }
+  main{max-width:680px;margin:0 auto;padding:24px 18px 80px}
+  h1,h2{font-family:Georgia,serif;font-weight:normal;letter-spacing:.02em}
+  h1{font-size:clamp(1.7rem,6vw,2.4rem);margin:.2em 0 .1em;text-align:center;color:var(--amber)}
+  h2{font-size:1.35rem;color:var(--amber);text-align:center;margin:.2em 0 .6em}
+  .subtitle{text-align:center;color:var(--muted);font-style:italic;margin:0 0 1.4em}
+  .panel{
+    background:linear-gradient(180deg,var(--card),#131d16);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:22px 20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.45);
+  }
+  .prose{color:var(--text)}
+  .prose em{color:var(--amber-dim)}
+  .hint{color:var(--muted);font-size:.92rem}
+  .center{text-align:center}
+  button{
+    font-family:inherit;
+    font-size:1.05rem;
+    cursor:pointer;
+    border-radius:10px;
+    padding:13px 22px;
+    border:1px solid var(--amber-dim);
+    background:linear-gradient(180deg,#2a2313,#1c170d);
+    color:var(--amber);
+    transition:transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  }
+  button:hover{transform:translateY(-1px);border-color:var(--amber);box-shadow:0 0 18px rgba(232,196,106,.18)}
+  button:active{transform:translateY(0)}
+  button.primary{
+    background:linear-gradient(180deg,#4a3c15,#332910);
+    border-color:var(--amber);
+    color:#ffe9ad;
+    font-size:1.12rem;
+  }
+  button.ghost{background:transparent;border-color:var(--line);color:var(--muted);font-size:.95rem;padding:9px 14px}
+  .btn-row{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:22px}
+  /* Oracle tree */
+  .tree{
+    display:block;margin:26px auto 6px;
+    font-size:4.2rem;line-height:1;border:none;background:none;padding:10px 16px;
+    filter:drop-shadow(0 0 22px rgba(232,196,106,.35));
+    animation:breathe 3.2s ease-in-out infinite;
+  }
+  @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+  /* Cards */
+  .cards{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:22px 0 6px}
+  .card{
+    width:180px;min-height:220px;border-radius:12px;padding:16px 14px;
+    background:var(--card);border:1px solid var(--line);
+    cursor:pointer;position:relative;overflow:hidden;
+    transition:transform .5s ease, box-shadow .5s ease, border-color .5s ease;
+    font-size:.98rem;text-align:center;
+    color:var(--muted);
+  }
+  .card .faceback{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px;height:100%}
+  .card .faceback .glyph{font-size:2.6rem;opacity:.8}
+  .card .faceback .label{font-size:.85rem;font-style:italic}
+  .card .facefront{display:none;height:100%;flex-direction:column;justify-content:center;gap:10px}
+  .card.revealed{
+    cursor:default;
+    border-color:var(--amber-dim);
+    box-shadow:0 0 24px rgba(232,196,106,.12);
+    color:var(--text);
+  }
+  .card.revealed .faceback{display:none}
+  .card.revealed .facefront{display:flex}
+  .card .kind{
+    font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:var(--amber-dim);
+  }
+  .card .emoji{font-size:2rem}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
+  .chip{
+    background:#1d2a20;border:1px solid var(--line);border-radius:999px;
+    padding:6px 13px;font-size:.88rem;color:var(--amber-dim);
+  }
+  /* Form */
+  label{display:block;margin:16px 0 6px;color:var(--amber-dim);font-size:.95rem}
+  input[type=text],textarea{
+    width:100%;background:#101a13;border:1px solid var(--line);border-radius:8px;
+    color:var(--text);font-family:inherit;font-size:1.02rem;padding:11px 12px;
+  }
+  input[type=text]:focus,textarea:focus{outline:none;border-color:var(--amber-dim)}
+  textarea{min-height:230px;resize:vertical;line-height:1.6}
+  .counter{font-size:.85rem;color:var(--muted);text-align:right;margin-top:4px}
+  .counter.ok{color:var(--green)}
+  .warn{color:#d98c6a;font-size:.92rem;margin-top:8px;display:none}
+  /* Final legend */
+  .legend{
+    background:linear-gradient(180deg,#151f17,#101810);
+    border:1px solid var(--amber-dim);
+    border-radius:14px;padding:26px 22px;
+    box-shadow:0 0 30px rgba(232,196,106,.08);
+  }
+  .legend .kicker{text-align:center;font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;color:var(--amber-dim);margin-bottom:6px}
+  .legend .ltitle{text-align:center;font-size:1.5rem;color:var(--amber);margin:0 0 14px}
+  .legend .ltext{white-space:pre-wrap;font-size:1.02rem}
+  .legend .lmeta{margin-top:18px;padding-top:12px;border-top:1px dashed var(--line);color:var(--muted);font-size:.9rem;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .legend .lmeta b{color:var(--amber-dim);font-weight:normal}
+  footer{margin-top:34px;text-align:center;color:#5c6a5c;font-size:.8rem}
+  #leaves{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+  #leaves span{position:absolute;top:-40px;font-size:1.1rem;opacity:0;animation:fall linear infinite}
+  @keyframes fall{
+    0%{transform:translateY(-40px) rotate(0deg);opacity:0}
+    10%{opacity:.5}
+    100%{transform:translateY(110vh) rotate(340deg);opacity:0}
+  }
+  main{position:relative;z-index:1}
+  #soundBtn{
+    position:fixed;top:14px;right:14px;z-index:2;
+    background:rgba(19,29,22,.8);border-color:var(--line);color:var(--muted);
+    padding:8px 12px;font-size:1rem;
+  }
+  #soundBtn.on{color:var(--amber);border-color:var(--amber-dim)}
+  #resume{display:none;margin-top:14px}
+  .flash{animation:flash 1s ease}
+  @keyframes flash{0%{border-color:var(--amber);box-shadow:0 0 30px rgba(232,196,106,.35)}100%{}}
+  [hidden]{display:none !important}
+  /* Carte d'oracle imprimable (visible uniquement à l'impression) */
+  #oracleCardPrint{display:none}
+  .oracle-card{
+    border:2px solid #8a6d3a;outline:1px solid #8a6d3a;outline-offset:4px;
+    border-radius:6px;padding:9mm 8mm;text-align:center;
+    font-family:Georgia,"Times New Roman",serif;color:#26221a;background:#fff;
+  }
+  .oracle-card .oc-head{font-size:11pt;letter-spacing:.18em;color:#6b5626}
+  .oracle-card .oc-sub{font-size:8pt;letter-spacing:.1em;color:#7d7560;margin-top:2mm}
+  .oracle-card .oc-row{display:flex;gap:4mm;text-align:left;margin-top:4mm;font-size:9pt;line-height:1.4}
+  .oracle-card .oc-k{flex:0 0 22mm;color:#6b5626;font-size:8pt;text-transform:uppercase;letter-spacing:.08em}
+  .oracle-card .oc-v{flex:1}
+  .oracle-card .oc-div{margin:4mm 0;color:#8a6d3a;font-size:9pt}
+  .oracle-card .oc-title{font-size:13pt;color:#4a3c15;margin-bottom:3mm}
+  .oracle-card .oc-text{font-size:9pt;text-align:justify;white-space:pre-wrap;line-height:1.5}
+  .oracle-card .oc-meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:2mm;font-size:8.5pt;color:#4a4436}
+  .oracle-card .oc-foot{margin-top:3mm;font-size:7.5pt;color:#8a8272;letter-spacing:.08em}
+  @media print{
+    @page{margin:12mm}
+    body{background:#fff !important}
+    body *{visibility:hidden}
+    #oracleCardPrint{display:block;position:absolute;top:0;left:0;right:0;z-index:99}
+    #oracleCardPrint, #oracleCardPrint *{visibility:visible}
+    #leaves{display:none}
+  }
+</style>
+</head>
+<body>
+
+<button id="soundBtn" aria-pressed="false" title="Ambiance sonore">🌬 Vent</button>
+<div id="leaves" aria-hidden="true"></div>
+
+<main>
+
+  <!-- ACCUEIL -->
+  <section id="screen-home">
+    <h1>L'Oracle<br>des arbres de Thère</h1>
+    <p class="subtitle">un jeu pour inventer une légende</p>
+    <div class="panel">
+      <p class="prose">
+        Quelque part dans ce lycée veillent des arbres plus anciens que vos cahiers.
+        Ils ont vu des cours de récré naître, des amours finir, des secrets s'enterrer à leurs pieds.
+        Certains d'entre eux ont une histoire. À vous d'inventer celle qui manque.
+      </p>
+      <p class="hint">Règle du jeu — trois minutes de lecture, quinze d'écriture :</p>
+      <p class="prose">
+        1. Franchissez la lisière.<br>
+        2. L'Oracle vous confie <em>un arbre</em>, <em>un signe étrange</em> et <em>une interdiction</em>.<br>
+        3. Écrivez la courte légende qui relie les trois. C'est tout.
+      </p>
+      <p class="hint">
+        Astuce : avant de commencer, promenez-vous dans l'exposition et gardez en tête
+        l'arbre qui vous appelle le plus. C'est peut-être lui que l'Oracle choisira.
+      </p>
+      <div class="btn-row">
+        <button class="primary" id="startBtn">Franchir la lisière</button>
+      </div>
+      <div id="resume" class="center">
+        <button class="ghost" id="resumeBtn">↩ Reprendre ma légende en cours</button>
+      </div>
+    </div>
+    <footer>L'Oracle des arbres de Thère · jeu d'écriture · scannez, jouez, transmettez
+<br><a href="mur.html" style="color:#8a9a7a;font-size:.82rem">✦ Voir le mur des légendes</a></footer>
+  </section>
+
+  <!-- TIRAGE -->
+  <section id="screen-draw" hidden>
+    <h2>L'Oracle écoute</h2>
+    <p class="subtitle center">Touchez les trois cartes, une à une.</p>
+    <div class="cards">
+      <div class="card" data-k="0"><div class="faceback"><div class="glyph">🍃</div><div class="label">L'arbre</div></div><div class="facefront"></div></div>
+      <div class="card" data-k="1"><div class="faceback"><div class="glyph">✨</div><div class="label">Le signe</div></div><div class="facefront"></div></div>
+      <div class="card" data-k="2"><div class="faceback"><div class="glyph">⛓</div><div class="label">L'interdit</div></div><div class="facefront"></div></div>
+    </div>
+    <div class="btn-row">
+      <button class="primary" id="toWrite" hidden>Écrire la légende →</button>
+      <button class="ghost" id="redraw" hidden>Mixer à nouveau</button>
+    </div>
+  </section>
+
+  <!-- ECRIPTURE -->
+  <section id="screen-write" hidden>
+    <h2>À vous de raconter</h2>
+    <div class="chips" id="recap"></div>
+    <div class="panel">
+      <p class="prose">
+        Votre légende doit raconter <em>l'origine</em> : pourquoi ce signe existe,
+        et pourquoi l'interdit a été posé. Une légende se transmet — écrivez comme si
+        les élèves de Thère l'avaient toujours connue. Visez une page, pas un roman.
+      </p>
+      <label for="inTitle">Titre de la légende</label>
+      <input type="text" id="inTitle" placeholder="Ex. : Ce que le tilleul cache depuis cent ans" maxlength="90">
+      <button class="ghost" id="titleBtn" style="margin-top:6px">🎲 Proposer un titre</button>
+      <label for="inTree">L'arbre de l'exposition que vous avez choisi (facultatif)</label>
+      <input type="text" id="inTree" placeholder="Ex. : le platane n°4 près de la cantine" maxlength="80">
+      <label for="inText">Votre légende</label>
+      <textarea id="inText" placeholder="On raconte qu'autrefois, du temps où Thère n'était encore qu'un champ…"></textarea>
+      <div class="counter" id="counter">0 mot</div>
+      <div class="warn" id="warn">Encore un petit effort : il faut au moins 30 mots pour sceller une légende.</div>
+      <label for="inSig">Signé</label>
+      <input type="text" id="inSig" placeholder="Prénom, surnom ou « un·e élève anonyme »" maxlength="40">
+      <div class="btn-row">
+        <button class="primary" id="sealBtn">🕯 Sceller la légende</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEGENDE FINALE -->
+  <section id="screen-final" hidden>
+    <h2>Légende scellée ✦</h2>
+    <p class="subtitle center">Votre texte a rejoint la mémoire des arbres de Thère.</p>
+    <div class="legend" id="legendBox">
+      <div class="kicker">Une légende des arbres de Thère</div>
+      <div class="ltitle" id="outTitle"></div>
+      <div class="ltext" id="outText"></div>
+      <div class="lmeta">
+        <span id="outTree"></span>
+        <span id="outSig"></span>
+      </div>
+    </div>
+    <p class="hint center" style="margin-top:14px">
+      Envoyez votre légende ou copiez-la pour la transmettre à votre enseignant·e —
+      elle rejoindra la collection des légendes de Thère.
+    </p>
+    <div class="btn-row">
+      <button id="sendBtn">✉ Envoyer la légende</button>
+      <button id="copyBtn">📋 Copier le texte</button>
+      <button id="dlBtn">⬇ Télécharger (.txt)</button>
+    </div>
+    <div class="btn-row">
+      <button class="primary" id="printBtn">🎴 Imprimer ma carte d'oracle</button>
+      <button class="ghost" id="againBtn">Une autre légende</button>
+    </div>
+    <p class="hint center" style="margin-top:10px">
+      La carte d'oracle, imprimable sur papier (ou en PDF via « Enregistrer au format PDF »),
+      est la suite finale du jeu : elle porte votre arbre, votre signe, votre interdit et votre légende.
+    </p>
+    <div id="oracleCardPrint" aria-hidden="true">
+      <div class="oracle-card">
+        <div class="oc-head">✦ L'ORACLE DES ARBRES DE THÈRE ✦</div>
+        <div class="oc-sub">carte d'oracle · n° <b id="ocNum"></b></div>
+        <div class="oc-row"><span class="oc-k">🍃 L'arbre</span><span class="oc-v" id="ocArbre"></span></div>
+        <div class="oc-row"><span class="oc-k">✨ Le signe</span><span class="oc-v" id="ocSigne"></span></div>
+        <div class="oc-row"><span class="oc-k">⛓ L'interdit</span><span class="oc-v" id="ocInterdit"></span></div>
+        <div class="oc-div">✦ ✦ ✦</div>
+        <div class="oc-title" id="ocTitre"></div>
+        <div class="oc-text" id="ocTexte"></div>
+        <div class="oc-div">✦ ✦ ✦</div>
+        <div class="oc-meta"><span id="ocExpo"></span><span id="ocSig"></span></div>
+        <div class="oc-foot">scellée le <span id="ocDate"></span> · mur des légendes · Thère</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  "use strict";
+
+  var DEST_EMAIL = "aurelie.challes@saint-lo-there.fr";
+
+  var ESSENCES = [
+    ["Le platane écorché par la foudre","⚡"],
+    ["Le tilleul qui fleurit en plein janvier","🌸"],
+    ["Le chêne à la couronne trop large","🌳"],
+    ["Le saule penché sur un étang asséché","💧"],
+    ["Le marronnier dont les marrons restent verts","🌰"],
+    ["L'érable coupé la veille de la fête du lycée","🪓"],
+    ["Le noyer dont personne ne ramasse les fruits","🌑"],
+    ["Le frêne qui pousse dans une fente du béton","🧱"],
+    ["Le poirier planté par un inconnu, avant la première pierre","🍐"],
+    ["Le tronc percé qui sert de boîte aux lettres","✉️"],
+    ["Le robinier venu d'Amérique par erreur","🧭"],
+    ["Le conifère planté pour un disparu du lycée","🕯"],
+    ["Le cerisier qui ne donne plus de cerises","🍒"],
+    ["La souche obstinée qui repousse chaque printemps","🌱"],
+    ["Les trois arbres plantés en ligne, par trois promotions différentes","3️⃣"],
+    ["L'arbre qui porte encore la crampe d'un vélo d'enfance","🚲"]
+  ];
+
+  var SIGNES = [
+    ["une lumière ambrée bat sous l'écorce, comme un pouls","🩸"],
+    ["les initiales gravées changent d'un soir à l'autre","✍️"],
+    ["un cercle d'herbe plus verte pousse à son pied, jamais tondé","⭕"],
+    ["les oiseaux se taisent tous en même temps, chaque soir à la même heure","🐦"],
+    ["un parfum de fumée froide flotte quand on s'approche","💨"],
+    ["les feuilles mortes tombent en remontant vers les branches","🍂"],
+    ["un tic-tac régulier s'entend au fond du creux du tronc","⏱"],
+    ["à midi exactement, son ombre pointe dans le mauvais sens","🕛"],
+    ["les graffitis posés sur lui disparaissent toujours au matin","🧹"],
+    ["on y entend sa propre voix envoyée quelques secondes plus tôt","🔁"],
+    ["il neige sous ses branches quand il pleut partout ailleurs","❄️"],
+    ["les photos prises de près montrent un arbre différent","📷"],
+    ["un fil d'araignée relie sa cime à un autre arbre, invisible","🕸"],
+    ["les feuilles qu'on y ramasse sont tièdes, même en hiver","🔥"],
+    ["on y trouve parfois des clés anciennes dans les racines","🗝"],
+    ["son écorce garde l'empreinte fraîche d'une main qu'on n'identifie pas","🖐"]
+  ];
+
+  var INTERDITS = [
+    ["Ne compte jamais ses branches à voix haute.","🤫"],
+    ["Celui qui s'y endort se souvient du futur.","😴"],
+    ["Ne donne jamais ton vrai prénom à cet arbre.","🪪"],
+    ["Ce qui est caché sous ses racines doit y rester cent ans.","⏳"],
+    ["Raconte-lui une histoire vraie et il te protégera tout un hiver.","📜"],
+    ["Ne le photographie jamais au crépuscule.","🌇"],
+    ["Ne réponds jamais si on t'appelle depuis son feuillage.","🚫"],
+    ["Toute promesse faite à son pied sera tenue — par lui.","🤝"],
+    ["Ne t'y appuie pas si tu mens.","🪵"],
+    ["Salue-le en arrivant : il se souvient de ceux qui ne le font pas.","🙏"],
+    ["Ce que tu y enterres y pousse à l'envers.","🌱"],
+    ["Ne brise pas ses branches : chaque blessure doit être rendue.","🩹"],
+    ["N'y attache jamais un cadenas sans en connaître la clé.","🔒"],
+    ["Ne le quitte pas sans lui avoir dit au revoir.","👋"],
+    ["Ne lui confie un secret que si tu es prêt à l'entendre répété.","🙊"],
+    ["Ne le déplace jamais, même en rêve.","🌀"]
+  ];
+
+  var TITLES = [
+    "{e} et la promesse de Thère",
+    "Ce que {e} cache depuis cent ans",
+    "L'année où {e} a changé",
+    "L'interdit qui protège {e}",
+    "{e} : origine d'un signe",
+    "Pourquoi on ne touche pas à {e}"
+  ];
+
+  var BACKS = [
+    ["L'arbre","🍃","essence"],
+    ["Le signe","✨","signe"],
+    ["L'interdit","⛓","interdit"]
+  ];
+
+  var DRAWN = [null,null,null];
+  var $ = function(id){ return document.getElementById(id); };
+  var screens = ["screen-home","screen-draw","screen-write","screen-final"];
+
+  function show(id){
+    screens.forEach(function(s){ $(s).hidden = (s !== id); });
+    window.scrollTo(0,0);
+  }
+  function pick(arr){ return Math.floor(Math.random()*arr.length); }
+  function lower(s){ return s.charAt(0).toLowerCase()+s.slice(1); }
+  function countWords(t){
+    var w = t.trim().replace(/['\u2019-]/g," ").split(/\s+/);
+    return t.trim() ? w.filter(Boolean).length : 0;
+  }
+  function save(){
+    try{
+      localStorage.setItem("oracle-tere", JSON.stringify({
+        drawn: DRAWN,
+        title: $("inTitle").value,
+        tree: $("inTree").value,
+        text: $("inText").value,
+        sig: $("inSig").value
+      }));
+    }catch(e){}
+  }
+  function load(){
+    try{ return JSON.parse(localStorage.getItem("oracle-tere")); }catch(e){ return null; }
+  }
+
+  /* Tirage */
+  function newDraw(){
+    DRAWN = [
+      pick(ESSENCES),
+      pick(SIGNES),
+      pick(INTERDITS)
+    ];
+  }
+  function fillCard(el, idx){
+    var d = DRAWN[idx];
+    el.querySelector(".facefront").innerHTML =
+      '<div><div class="kind">'+BACKS[idx][2]+'</div>'+(
+        idx===0 ? '<div class="emoji">'+d[1]+'</div><div>'+d[0]+'</div>' :
+        idx===1 ? '<div class="emoji">'+d[1]+'</div><div>Il y a là-bas '+lower(d[0])+'.</div>' :
+        '<div class="emoji">'+d[1]+'</div><div>'+d[0]+'</div>'
+      )+'</div>';
+  }
+  function resetCards(){
+    document.querySelectorAll(".card").forEach(function(c,i){
+      c.classList.remove("revealed","flash");
+      void c.offsetWidth;
+      fillCard(c,i);
+    });
+    $("toWrite").hidden = true;
+    $("redraw").hidden = true;
+  }
+  document.querySelectorAll(".card").forEach(function(c){
+    c.addEventListener("click", function(){
+      if(c.classList.contains("revealed")) return;
+      var idx = +c.dataset.k;
+      fillCard(c, idx);
+      c.classList.add("revealed","flash");
+      if(document.querySelectorAll(".card.revealed").length === 3){
+        $("toWrite").hidden = false;
+        $("redraw").hidden = false;
+      }
+    });
+  });
+  $("redraw").addEventListener("click", function(){
+    newDraw(); resetCards();
+  });
+  $("toWrite").addEventListener("click", function(){
+    var r = $("recap");
+    r.innerHTML = "";
+    DRAWN.forEach(function(d,i){
+      var chip = document.createElement("span");
+      chip.className = "chip";
+      chip.textContent = BACKS[i][0] + " : " + (i===1 ? lower(d[0]) : d[0]);
+      r.appendChild(chip);
+    });
+    show("screen-write");
+    $("inText").focus();
+  });
+
+  /* Titre auto */
+  $("titleBtn").addEventListener("click", function(){
+    var t = TITLES[pick(TITLES)].replace("{e}", lower(DRAWN[0][0]));
+    $("inTitle").value = t;
+    save();
+  });
+
+  /* Compteur + sauvegarde */
+  function updateCounter(){
+    var n = countWords($("inText").value);
+    $("counter").textContent = n + (n>1 ? " mots" : " mot");
+    $("counter").classList.toggle("ok", n >= 80 && n <= 300);
+    var tooShort = n > 0 && n < 30;
+    $("warn").style.display = tooShort ? "block" : "none";
+  }
+  ["inTitle","inTree","inText","inSig"].forEach(function(id){
+    $(id).addEventListener("input", function(){ save(); updateCounter(); });
+  });
+
+  /* Sceller */
+  $("sealBtn").addEventListener("click", function(){
+    if(countWords($("inText").value) < 30){
+      $("warn").style.display = "block";
+      $("inText").focus();
+      return;
+    }
+    var title = $("inTitle").value.trim() || TITLES[pick(TITLES)].replace("{e}", lower(DRAWN[0][0]));
+    $("outTitle").textContent = title;
+    $("outText").textContent = $("inText").value.trim();
+    $("outTree").innerHTML = $("inTree").value.trim() ? "Arbre de l'expo : <b>"+escapeHtml($("inTree").value.trim())+"</b>" : "";
+    $("outSig").innerHTML = $("inSig").value.trim() ? "Scellée par <b>"+escapeHtml($("inSig").value.trim())+"</b>" : "";
+    fillOracleCard();
+    show("screen-final");
+    try{ localStorage.removeItem("oracle-tere"); }catch(e){}
+  });
+
+  function fillOracleCard(){
+    $("ocNum").textContent = String(100 + pick(900));
+    $("ocArbre").textContent = DRAWN[0][0];
+    $("ocSigne").textContent = "Il y a là-bas " + lower(DRAWN[1][0]) + ".";
+    $("ocInterdit").textContent = DRAWN[2][0];
+    $("ocTitre").textContent = $("outTitle").textContent;
+    $("ocTexte").textContent = $("inText").value.trim();
+    $("ocExpo").textContent = $("inTree").value.trim() ? "Arbre de l'expo : " + $("inTree").value.trim() : "";
+    $("ocSig").textContent = $("inSig").value.trim() ? "Scellée par " + $("inSig").value.trim() : "";
+    $("ocDate").textContent = new Date().toLocaleDateString("fr-FR", {day:"numeric", month:"long", year:"numeric"});
+  }
+  function escapeHtml(s){
+    return s.replace(/[&<>"]/g, function(ch){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[ch];
+    });
+  }
+
+  /* Copier / télécharger / recommencer */
+  function plainText(){
+    var parts = ["« " + $("outTitle").textContent + " » — Une légende des arbres de Thère", "",
+      $("outText").textContent];
+    if($("outTree").textContent) parts.push("", "Arbre de l'exposition : " + $("outTree").textContent.replace("Arbre de l'expo : ","").replace("Arbre de l'exposition : ",""));
+    if($("outSig").textContent) parts.push("Scellée par " + $("outSig").textContent.replace("Scellée par ",""));
+    return parts.join("\n");
+  }
+  $("copyBtn").addEventListener("click", function(){
+    var t = plainText();
+    function done(){ $("copyBtn").textContent = "✓ Copié !"; setTimeout(function(){ $("copyBtn").textContent = "📋 Copier le texte"; }, 1800); }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(t).then(done, function(){ fallback(); });
+    } else { fallback(); }
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = t; document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); done(); }catch(e){}
+      document.body.removeChild(ta);
+    }
+  });
+  $("dlBtn").addEventListener("click", function(){
+    var blob = new Blob([plainText()], {type:"text/plain;charset=utf-8"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "legende-arbres-de-there.txt";
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  });
+  $("printBtn").addEventListener("click", function(){
+    fillOracleCard();
+    window.print();
+  });
+  $("sendBtn").addEventListener("click", function(){
+    if(DEST_EMAIL.indexOf("a.remplacer") !== -1){
+      alert("L'envoi par e-mail n'est pas encore activé. Demandez à votre enseignant·e de renseigner son adresse dans le jeu.");
+      return;
+    }
+    var sujet = "Légende des arbres de Thère – " + $("outTitle").textContent;
+    var corps = plainText();
+    window.location.href = "mailto:" + DEST_EMAIL +
+      "?subject=" + encodeURIComponent(sujet) +
+      "&body=" + encodeURIComponent(corps);
+  });
+  $("againBtn").addEventListener("click", function(){
+    $("inTitle").value = ""; $("inTree").value = ""; $("inText").value = ""; $("inSig").value = "";
+    updateCounter();
+    newDraw(); resetCards();
+    show("screen-draw");
+  });
+
+  /* Navigation */
+  $("startBtn").addEventListener("click", function(){
+    newDraw(); resetCards();
+    show("screen-draw");
+  });
+  var prev = load();
+  if(prev && prev.text && prev.text.trim().length > 0){
+    $("resume").style.display = "block";
+    $("resumeBtn").addEventListener("click", function(){
+      DRAWN = prev.drawn || [ESSENCES[0], SIGNES[0], INTERDITS[0]];
+      resetCards();
+      DRAWN.forEach(function(_,i){
+        var c = document.querySelector('.card[data-k="'+i+'"]');
+        c.classList.add("revealed");
+      });
+      $("inTitle").value = prev.title || "";
+      $("inTree").value = prev.tree || "";
+      $("inText").value = prev.text || "";
+      $("inSig").value = prev.sig || "";
+      updateCounter();
+      var r = $("recap"); r.innerHTML = "";
+      DRAWN.forEach(function(d,i){
+        var chip = document.createElement("span");
+        chip.className = "chip";
+        chip.textContent = BACKS[i][0] + " : " + (i===1 ? lower(d[0]) : d[0]);
+        r.appendChild(chip);
+      });
+      show("screen-write");
+    });
+  }
+
+  newDraw(); resetCards();
+  updateCounter();
+
+  /* Feuilles */
+  var leaves = $("leaves");
+  for(var i=0;i<9;i++){
+    var s = document.createElement("span");
+    s.textContent = ["🍃","🍂","🍁"][i%3];
+    s.style.left = (Math.random()*100) + "vw";
+    s.style.animationDuration = (9 + Math.random()*12) + "s";
+    s.style.animationDelay = (Math.random()*10) + "s";
+    s.style.fontSize = (0.8 + Math.random()*0.9) + "rem";
+    leaves.appendChild(s);
+  }
+
+  /* Vent (WebAudio, aucun fichier) */
+  var actx = null, noise = null, gain = null;
+  $("soundBtn").addEventListener("click", function(){
+    try{
+      if(!actx){
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if(!AC) return;
+        actx = new AC();
+        var dur = 3, rate = actx.sampleRate;
+        var buf = actx.createBuffer(1, dur*rate, rate);
+        var data = buf.getChannelData(0), last = 0;
+        for(var i=0;i<data.length;i++){
+          var white = Math.random()*2-1;
+          last = (last + 0.02*white) / 1.02;
+          data[i] = last * 3.2;
+        }
+        noise = actx.createBufferSource();
+        noise.buffer = buf; noise.loop = true;
+        var filter = actx.createBiquadFilter();
+        filter.type = "lowpass"; filter.frequency.value = 420;
+        gain = actx.createGain(); gain.gain.value = 0;
+        noise.connect(filter); filter.connect(gain); gain.connect(actx.destination);
+        noise.start();
+      }
+      if($("soundBtn").classList.toggle("on")){
+        actx.resume();
+        gain.gain.setTargetAtTime(0.06, actx.currentTime, 0.6);
+        $("soundBtn").setAttribute("aria-pressed","true");
+      } else {
+        gain.gain.setTargetAtTime(0, actx.currentTime, 0.2);
+        $("soundBtn").setAttribute("aria-pressed","false");
+      }
+    }catch(e){}
+  });
+})();
+</script>
+</body>
+</html>

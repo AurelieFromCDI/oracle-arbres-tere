@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le mur des légendes — les arbres de Thère</title>
+<meta name="description" content="Collection des légendes inventées par les élèves autour des arbres de Thère.">
+<style>
+  :root{
+    --bg:#0c120e;
+    --text:#e9e4d5;
+    --muted:#9aa694;
+    --amber:#e8c46a;
+    --amber-dim:#b5965a;
+    --green:#7fae8a;
+    --card:#17231b;
+    --line:#2a3a2e;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    min-height:100vh;
+    background:radial-gradient(1200px 800px at 50% -10%, #18251c 0%, var(--bg) 60%);
+    color:var(--text);
+    font-family:Georgia,"Times New Roman",serif;
+    line-height:1.55;
+  }
+  main{max-width:900px;margin:0 auto;padding:24px 18px 60px;position:relative;z-index:1}
+  h1{font-weight:normal;text-align:center;color:var(--amber);font-size:clamp(1.6rem,6vw,2.3rem);margin:.2em 0 .1em}
+  .subtitle{text-align:center;color:var(--muted);font-style:italic;margin:0 0 1.6em}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+  .legend{
+    background:linear-gradient(180deg,var(--card),#131d16);
+    border:1px solid var(--line);border-radius:12px;padding:18px 16px;
+    box-shadow:0 8px 22px rgba(0,0,0,.4);
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .legend .kicker{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--amber-dim);text-align:center}
+  .legend .ltitle{color:var(--amber);font-size:1.12rem;text-align:center;margin:0}
+  .legend .ltext{white-space:pre-wrap;font-size:.95rem;flex:1}
+  .legend .lmeta{border-top:1px dashed var(--line);padding-top:8px;color:var(--muted);font-size:.82rem;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .legend .lmeta b{color:var(--amber-dim);font-weight:normal}
+  .legend.fondatrice{border-color:#3a4a3e}
+  .empty{
+    text-align:center;color:var(--muted);font-style:italic;
+    border:1px dashed var(--line);border-radius:12px;padding:40px 20px;
+  }
+  .top{display:flex;justify-content:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+  a.back{
+    color:var(--amber-dim);text-decoration:none;font-size:.95rem;
+    border:1px solid var(--line);border-radius:999px;padding:8px 16px;
+  }
+  a.back:hover{color:var(--amber);border-color:var(--amber-dim)}
+  footer{margin-top:40px;text-align:center;color:#5c6a5c;font-size:.8rem}
+</style>
+</head>
+<body>
+<main>
+  <h1>Le mur des légendes</h1>
+  <p class="subtitle">ce que les élèves ont inventé pour les arbres de Thère</p>
+  <div class="top">
+    <a class="back" href="index.html">🌿 Jouer à l'Oracle</a>
+    <a class="back" id="printLink" href="#" onclick="window.print();return false;">🖨 Imprimer le mur</a>
+  </div>
+  <div class="grid" id="wall"></div>
+  <div class="empty" id="empty" hidden>Les premières légendes viendront s'accrocher ici…</div>
+  <footer>Les légendes sont transmises à l'enseignant·e, relues, puis accrochées au mur.
+  <br>L'Oracle des arbres de Thère</footer>
+</main>
+<script src="legends.js"></script>
+<script>
+(function(){
+  var wall = document.getElementById("wall");
+  var empty = document.getElementById("empty");
+  var list = (typeof LEGENDS !== "undefined") ? LEGENDS.slice() : [];
+  list.sort(function(a,b){ return (b.date||"").localeCompare(a.date||""); });
+  if(!list.length){ empty.hidden = false; return; }
+  list.forEach(function(l){
+    var card = document.createElement("article");
+    card.className = "legend" + (l.fondatrice ? " fondatrice" : "");
+    var kick = document.createElement("div");
+    kick.className = "kicker";
+    kick.textContent = l.fondatrice ? "légende fondatrice" : "une légende des arbres de Thère";
+    var h = document.createElement("h2");
+    h.className = "ltitle";
+    h.textContent = l.title || "Sans titre";
+    var body = document.createElement("div");
+    body.className = "ltext";
+    body.textContent = l.text || "";
+    var meta = document.createElement("div");
+    meta.className = "lmeta";
+    if(l.tree){
+      var s1 = document.createElement("span");
+      s1.append("Arbre de l\u2019expo : ");
+      var b1 = document.createElement("b"); b1.textContent = l.tree;
+      s1.appendChild(b1); meta.appendChild(s1);
+    }
+    if(l.sig){
+      var s2 = document.createElement("span");
+      s2.append((l.fondatrice ? "Rapportée par " : "Scellée par "));
+      var b2 = document.createElement("b"); b2.textContent = l.sig;
+      s2.appendChild(b2); meta.appendChild(s2);
+    }
+    if(l.date){
+      var s3 = document.createElement("span");
+      var b3 = document.createElement("b"); b3.textContent = l.date;
+      s3.appendChild(b3); meta.appendChild(s3);
+    }
+    card.append(kick, h, body, meta);
+    wall.appendChild(card);
+  });
+})();
+</script>
+</body>
+</html>
