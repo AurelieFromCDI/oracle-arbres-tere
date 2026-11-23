@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Affiches A3 — L'Oracle des arbres de Thère</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root{
+    --paper:#f3ecd8;
+    --ink:#2e2a1e;
+    --bronze:#6b5626;
+    --green:#3f4a3a;
+    --soft:#7d7560;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#e8e2d0;font-family:Georgia,"Times New Roman",serif;color:var(--ink)}
+  .page{
+    width:297mm;height:420mm;margin:8mm auto;background:var(--paper);
+    padding:24mm 22mm;position:relative;overflow:hidden;
+    box-shadow:0 4px 24px rgba(0,0,0,.18);
+    display:flex;flex-direction:column;
+  }
+  .frame{
+    position:absolute;inset:9mm;border:2px solid var(--bronze);outline:1px solid var(--bronze);
+    outline-offset:3mm;pointer-events:none;
+  }
+  .frame::before,.frame::after,.corners c::before,.corners c::after{content:"✦";position:absolute;color:var(--bronze);font-size:9mm;line-height:1}
+  .frame::before{top:-5mm;left:calc(50% - 3.2mm);background:var(--paper);padding:0 2mm}
+  .frame::after{bottom:-5mm;left:calc(50% - 3.2mm);background:var(--paper);padding:0 2mm}
+  .corners c::before{top:-4.5mm;left:-4.5mm;background:var(--paper);padding:0 .5mm}
+  .corners c::after{top:-4.5mm;right:-4.5mm;background:var(--paper);padding:0 .5mm}
+  .corners{position:absolute;inset:9mm;pointer-events:none}
+
+  .content{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;text-align:center}
+
+  .kicker{font-size:6.5mm;letter-spacing:.35em;text-transform:uppercase;color:var(--soft)}
+  .rule{width:60mm;height:1px;background:var(--bronze);margin:6mm 0}
+  h1{font-size:26mm;line-height:1.12;font-weight:normal;color:var(--green);margin:4mm 0 2mm}
+  h1 em{font-style:normal;color:var(--bronze)}
+  .tagline{font-size:9.5mm;font-style:italic;color:var(--soft);max-width:210mm;line-height:1.45}
+
+  .steps{display:flex;gap:10mm;margin:16mm 6mm 10mm;justify-content:center}
+  .step{flex:1;max-width:76mm;border:1px solid var(--bronze);border-radius:3mm;padding:8mm 6mm;background:rgba(255,255,255,.35)}
+  .step .n{font-size:11mm;color:var(--bronze)}
+  .step .t{font-size:7.2mm;line-height:1.4;margin-top:3mm}
+  .step .t b{color:var(--green);font-weight:normal}
+
+  .atout{font-size:7.5mm;color:var(--soft);font-style:italic;margin-top:6mm;line-height:1.5}
+  .atout b{color:var(--ink);font-style:normal}
+
+  .cta{margin-top:auto;width:230mm;border:1px dashed var(--bronze);border-radius:3mm;
+    padding:9mm 10mm;display:flex;align-items:center;gap:12mm;justify-content:center}
+  .cta img{width:44mm;height:44mm;image-rendering:pixelated}
+  .cta .txt{text-align:left}
+  .cta .txt .big{font-size:10.5mm;color:var(--green)}
+  .cta .txt .url{font-size:5.6mm;color:var(--soft);letter-spacing:.03em;margin-top:2mm;word-break:break-all}
+  .foot{font-size:5.4mm;color:var(--soft);margin-top:7mm;letter-spacing:.18em;text-transform:uppercase}
+
+  /* page 2 */
+  .scan-kicker{margin-top:14mm;font-size:7.5mm;letter-spacing:.3em;text-transform:uppercase;color:var(--soft)}
+  .scan-title{font-size:34mm;color:var(--green);margin:6mm 0 4mm;font-weight:normal}
+  .scan-sub{font-size:10mm;font-style:italic;color:var(--soft);max-width:200mm;line-height:1.5}
+  .qr-big{margin:16mm auto 0;width:170mm;height:170mm;padding:8mm;background:#fff;border:2px solid var(--bronze);border-radius:4mm}
+  .qr-big img{width:100%;height:100%}
+  .scan-url{margin-top:12mm;font-size:8.5mm;letter-spacing:.05em;color:var(--ink);word-break:break-all}
+  .scan-help{margin-top:8mm;font-size:6.8mm;color:var(--soft);line-height:1.6;max-width:190mm}
+  .scan-help b{color:var(--green);font-weight:normal}
+
+  .screen-note{position:fixed;left:0;right:0;bottom:0;background:#2e2a1e;color:#f3ecd8;
+    padding:10px 16px;font-size:14px;text-align:center;z-index:9}
+  @media print{
+    html,body{background:#fff}
+    .page{margin:0;box-shadow:none;page-break-after:always}
+    .page:last-child{page-break-after:auto}
+    .screen-note{display:none}
+  }
+  @page{size:A3 portrait;margin:0}
+</style>
+</head>
+<body>
+
+<div class="screen-note">
+  Pour imprimer : Ctrl + P (ou ⌘ + P) → Papier : A3 · Marges : Aucune · cocher « Graphiques d'arrière-plan ».
+</div>
+
+<!-- PAGE 1 · AFFICHE D'INVITATION -->
+<section class="page">
+  <div class="frame"></div>
+  <div class="corners"><c></c></div>
+  <div class="content">
+    <div class="kicker">Un jeu d'écriture · dans les couloirs du lycée</div>
+    <div class="rule"></div>
+    <h1>L'Oracle<br><em>des arbres de Thère</em></h1>
+    <p class="tagline">Un arbre est le seul témoin de tout ce qui s'est rêvé, trahi et promis à son pied.
+    Mais certains arbres, à Thère, attendent encore qu'on invente leur histoire.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="n">Ⅰ</div>
+        <div class="t">Scanne le QR code avec ton téléphone — c'est ta seule clef d'entrée.</div>
+      </div>
+      <div class="step">
+        <div class="n">Ⅱ</div>
+        <div class="t">L'Oracle te confie <b>un arbre</b>, <b>un signe étrange</b> et <b>une interdiction</b>.</div>
+      </div>
+      <div class="step">
+        <div class="n">Ⅲ</div>
+        <div class="t">Écris la courte légende qui relie les trois — et <b>scelle-la</b>.</div>
+      </div>
+    </div>
+
+    <p class="atout"><b>15 minutes</b>, seul·e ou à deux. Ton téléphone suffit.
+    Les légendes scellées rejoignent la collection du lycée — et le mur des légendes.</p>
+
+    <div class="cta">
+      <img alt="QR code du jeu" src="data:image/png;base64,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">
+      <div class="txt">
+        <div class="big">Ton arbre t'attend.</div>
+        <div class="url">aureliefromcdi.github.io/oracle-arbres-tere</div>
+      </div>
+    </div>
+    <div class="foot">Épreuve d'écriture · proposition de Mme Challes · CDI</div>
+  </div>
+</section>
+
+<!-- PAGE 2 · AFFICHE QR CODE -->
+<section class="page">
+  <div class="frame"></div>
+  <div class="corners"><c></c></div>
+  <div class="content">
+    <div class="scan-kicker">Le jeu se lance ici</div>
+    <h2 class="scan-title">Scanne <em style="font-style:normal;color:var(--bronze)">·</em> Tire <em style="font-style:normal;color:var(--bronze)">·</em> Écris</h2>
+    <p class="scan-sub">Trois cartes pour décider de ton destin de légendiste :
+    un arbre, un signe, une interdiction. Le reste s'invente.</p>
+
+    <div class="qr-big"><img alt="QR code de l'Oracle" src="data:image/png;base64,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"></div>
+
+    <div class="scan-url">aureliefromcdi.github.io/oracle-arbres-tere</div>
+    <p class="scan-help">
+      <b>Pas de réseau au sous-sol du CDI ?</b> Repasse à cet endroit, ou tape simplement l'adresse ci-dessus.<br>
+      Durée : environ un quart d'heure · sur ton téléphone · résultat envoyé à l'Oracle — pardon, à Mme Challes.
+    </p>
+    <div class="foot" style="margin-top:auto;padding-bottom:4mm">L'Oracle des arbres de Thère · mur des légendes · CDI</div>
+  </div>
+</section>
+
+</body>
+</html>
