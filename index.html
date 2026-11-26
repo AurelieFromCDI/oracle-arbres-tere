@@ -325,16 +325,16 @@
     ["Le cerisier qui ne donne plus de cerises","🍒"],
     ["La souche obstinée qui repousse chaque printemps","🌱"],
     ["Les trois arbres plantés en ligne, par trois promotions différentes","3️⃣"],
-    ["L'arbre qui porte encore la crampe d'un vélo d'enfance","🚲"]
+    ["L'arbre qui porte encore les stigmates de la corde de l'âne qu'on y attachait","🚲"]
   ];
 
   var SIGNES = [
     ["une lumière ambrée bat sous l'écorce, comme un pouls","🩸"],
     ["les initiales gravées changent d'un soir à l'autre","✍️"],
-    ["un cercle d'herbe plus verte pousse à son pied, jamais tondé","⭕"],
+    ["un cercle d'herbe plus verte pousse à son pied, jamais tondu","⭕"],
     ["les oiseaux se taisent tous en même temps, chaque soir à la même heure","🐦"],
     ["un parfum de fumée froide flotte quand on s'approche","💨"],
-    ["les feuilles mortes tombent en remontant vers les branches","🍂"],
+    ["les feuilles tombent en sens inversé, elles remontent vers les branches","🍂"],
     ["un tic-tac régulier s'entend au fond du creux du tronc","⏱"],
     ["à midi exactement, son ombre pointe dans le mauvais sens","🕛"],
     ["les graffitis posés sur lui disparaissent toujours au matin","🧹"],
@@ -391,6 +391,7 @@
   }
   function pick(arr){ return Math.floor(Math.random()*arr.length); }
   function lower(s){ return s.charAt(0).toLowerCase()+s.slice(1); }
+  function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
   function countWords(t){
     var w = t.trim().replace(/['\u2019-]/g," ").split(/\s+/);
     return t.trim() ? w.filter(Boolean).length : 0;
@@ -423,7 +424,7 @@
     el.querySelector(".facefront").innerHTML =
       '<div><div class="kind">'+BACKS[idx][2]+'</div>'+(
         idx===0 ? '<div class="emoji">'+d[1]+'</div><div>'+d[0]+'</div>' :
-        idx===1 ? '<div class="emoji">'+d[1]+'</div><div>Il y a là-bas '+lower(d[0])+'.</div>' :
+        idx===1 ? '<div class="emoji">'+d[1]+'</div><div>'+cap(d[0])+'.</div>' :
         '<div class="emoji">'+d[1]+'</div><div>'+d[0]+'</div>'
       )+'</div>';
   }
@@ -503,7 +504,7 @@
   function fillOracleCard(){
     $("ocNum").textContent = String(100 + Math.floor(Math.random()*900));
     $("ocArbre").textContent = DRAWN[0][0];
-    $("ocSigne").textContent = "Il y a là-bas " + lower(DRAWN[1][0]) + ".";
+    $("ocSigne").textContent = cap(DRAWN[1][0]) + ".";
     $("ocInterdit").textContent = DRAWN[2][0];
     $("ocTitre").textContent = $("outTitle").textContent;
     $("ocTexte").textContent = $("inText").value.trim();
